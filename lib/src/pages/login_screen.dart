@@ -218,7 +218,7 @@ class _LoginPageState extends State<LoginPage> {
         Column(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(top: 84.0, right: 90.0, left: 5.0),
+              padding: const EdgeInsets.only(top: 84.0, right: 99.0, left: 5.0),
               child: Container(
                   width: 245.0,
                   height: 28.0,

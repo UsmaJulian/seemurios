@@ -1,6 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:seemur/src/pages/ayuda_screen.dart';
+import 'package:seemur/src/pages/cuenta_screen.dart';
+import 'package:seemur/src/pages/empresas_screen.dart';
+import 'package:seemur/src/pages/info_destacada_screen.dart';
 import 'package:seemur/src/pages/splash_scree_one_loading_screen.dart';
 import 'package:seemur/src/providers/auth_provider.dart';
 import 'package:seemur/src/providers/user_model_provider.dart';
@@ -131,14 +135,14 @@ class _PreferencesPageState extends State<PreferencesPage> {
                               .width,
                           child: new FlatButton(
                               onPressed: () {
-//                                Navigator.push(
-//                                  context,
-//                                  MaterialPageRoute(
-//                                      builder: (context) =>
-//                                          CuentaPage(
-//                                            auth: Auth(),
-//                                          )),
-//                                );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          CuentaPage(
+                                            auth: Auth(),
+                                          )),
+                                );
                               },
                               child: Row(
                                 children: <Widget>[
@@ -179,14 +183,14 @@ class _PreferencesPageState extends State<PreferencesPage> {
                               .width,
                           child: new FlatButton(
                               onPressed: () {
-//                                Navigator.push(
-//                                  context,
-//                                  MaterialPageRoute(
-//                                      builder: (context) =>
-//                                          InfoDestacadaPage(
-//                                            auth: Auth(),
-//                                          )),
-//                                );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          InfoDestacadaPage(
+                                            auth: Auth(),
+                                          )),
+                                );
                               },
                               child: Row(
                                 children: <Widget>[
@@ -264,14 +268,14 @@ class _PreferencesPageState extends State<PreferencesPage> {
                               .width,
                           child: new FlatButton(
                               onPressed: () {
-//                                Navigator.push(
-//                                  context,
-//                                  MaterialPageRoute(
-//                                      builder: (context) =>
-//                                          EmpresasPage(
-//                                            auth: Auth(),
-//                                          )),
-//                                );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          EmpresasPage(
+                                            auth: Auth(),
+                                          )),
+                                );
                               },
                               child: Row(
                                 children: <Widget>[
@@ -310,14 +314,14 @@ class _PreferencesPageState extends State<PreferencesPage> {
                               .width,
                           child: new FlatButton(
                               onPressed: () {
-//                                Navigator.push(
-//                                  context,
-//                                  MaterialPageRoute(
-//                                      builder: (context) =>
-//                                          AyudaPage(
-//                                            auth: Auth(),
-//                                          )),
-//                                );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          AyudaPage(
+                                            auth: Auth(),
+                                          )),
+                                );
                               },
                               child: Row(
                                 children: <Widget>[

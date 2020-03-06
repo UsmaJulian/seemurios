@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:seemur/src/pages/add_client_screen.dart';
+import 'package:seemur/src/pages/perfil_screen.dart';
 import 'package:seemur/src/providers/auth_provider.dart';
 import 'package:seemur/src/providers/user_model_provider.dart';
 
@@ -72,10 +73,10 @@ class _CheckRolesState extends State<CheckRoles> {
       );
     } else {
       Usuario usuario = Usuario.fromDoc(snapshot);
-//      return PerfilPage(
-//        auth: Auth(),
-//        usuario: usuario,
-//      );
+      return PerfilPage(
+        auth: Auth(),
+        usuario: usuario,
+      );
     }
   }
 }

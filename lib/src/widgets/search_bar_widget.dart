@@ -58,30 +58,37 @@ class _SearchBarState extends State<SearchBar> {
                   color: Colors.transparent,
                 )),
             child: Padding(
-              padding: const EdgeInsets.only(right: 38.0),
-              child: new TextField(
-                controller: controller,
-                decoration: new InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'Buscar planes o lugares',
-                  prefixIcon: Icon(
-                    Icons.search,
+              padding: const EdgeInsets.only(
+                right: 8.0,
+                top: 8.0,
+              ),
+              child: Center(
+                child: new TextField(
+                  controller: controller,
+                  decoration: new InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(vertical: 5.0),
+                    border: InputBorder.none,
+                    hintText: 'Buscar ',
+                    prefixIcon: Icon(
+                      Icons.search,
+                      size: 25,
+                    ),
                   ),
+                  onChanged: (value) {
+                    initiateSearch(value);
+                  },
+                  onEditingComplete: () {
+                    controller.text = controller.text[0].toUpperCase() +
+                        controller.text.substring(1);
+                    print(controller.text);
+                    var valor = controller.text;
+                    Navigator.push(
+                        context,
+                        new MaterialPageRoute(
+                            builder: (context) => SearchResult(valor: valor)));
+                  },
+                  textInputAction: TextInputAction.done,
                 ),
-                onChanged: (value) {
-                  initiateSearch(value);
-                },
-                onEditingComplete: () {
-                  controller.text = controller.text[0].toUpperCase() +
-                      controller.text.substring(1);
-                  print(controller.text);
-                  var valor = controller.text;
-                  Navigator.push(
-                      context,
-                      new MaterialPageRoute(
-                          builder: (context) => SearchResult(valor: valor)));
-                },
-                textInputAction: TextInputAction.done,
               ),
             ),
           ),
@@ -93,14 +100,8 @@ class _SearchBarState extends State<SearchBar> {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(22.0, 0, 22.0, 0),
               child: Container(
-                height: MediaQuery
-                    .of(context)
-                    .size
-                    .height * 0.055,
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width * 0.25,
+                height: MediaQuery.of(context).size.height * 0.055,
+                width: MediaQuery.of(context).size.width * 0.25,
                 decoration: BoxDecoration(
                   border: Border.all(width: 0, style: BorderStyle.none),
                   borderRadius: BorderRadius.horizontal(

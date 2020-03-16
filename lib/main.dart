@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:seemur/src/pages/splash_scree_one_loading_screen.dart';
+import 'package:seemur/src/providers/preferencias_usuario.dart';
 
 
-void main() => runApp(MyApp());
+void main() async {  WidgetsFlutterBinding.ensureInitialized();
+final pref = new PreferenciasUsuario();
+await pref.initPrefs();
+  runApp(MyApp());}
 
 class MyApp extends StatefulWidget {
   @override

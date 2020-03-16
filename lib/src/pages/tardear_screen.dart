@@ -7,6 +7,7 @@ import 'package:seemur/src/pages/cervecerias_screen.dart';
 import 'package:seemur/src/pages/client_body_screen.dart';
 import 'package:seemur/src/pages/heladerias_screen.dart';
 import 'package:seemur/src/pages/restaurantes_screen.dart';
+import 'package:seemur/src/providers/preferencias_usuario.dart';
 import 'package:seemur/src/widgets/bottom_navigator_bar_widget.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
@@ -17,6 +18,7 @@ class TardearPage extends StatefulWidget {
 }
 
 class _TardearPageState extends State<TardearPage> {
+  final prefsus = new PreferenciasUsuario();
   ScrollController _controller;
 
   @override
@@ -53,7 +55,10 @@ class _TardearPageState extends State<TardearPage> {
         ),
       ),
       bottomNavigationBar: Container(
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery
+            .of(context)
+            .size
+            .width,
         height: 70,
         child: NavigatorBar(navCallback: (i) => print("Navigating to $i")),
       ),
@@ -68,7 +73,7 @@ class _TardearPageState extends State<TardearPage> {
                       children: <Widget>[
                         Padding(
                           padding:
-                          EdgeInsets.only(top: 48.0, left: 0, right: 125.0),
+                          EdgeInsets.only(top: 48.0, left: 0, right: 60.0),
                           child: Text('Sugerencias para ti',
                               style: TextStyle(
                                 fontFamily: 'HankenGrotesk',
@@ -117,7 +122,8 @@ class _TardearPageState extends State<TardearPage> {
                                                         height: 38,
                                                       ),
                                                       onPressed: () {
-                                                        Navigator.of(context).push(
+                                                        Navigator.of(context)
+                                                            .push(
                                                             MaterialPageRoute(
                                                                 builder:
                                                                     (context) =>
@@ -182,10 +188,12 @@ class _TardearPageState extends State<TardearPage> {
                                                           height: 38,
                                                         ),
                                                         onPressed: () {
-                                                          Navigator.of(context).push(
+                                                          Navigator.of(context)
+                                                              .push(
                                                               MaterialPageRoute(
                                                                   builder:
-                                                                      (context) =>
+                                                                      (
+                                                                      context) =>
                                                                       RestaurantesPage()));
                                                         },
                                                       ),
@@ -248,10 +256,12 @@ class _TardearPageState extends State<TardearPage> {
                                                           height: 38,
                                                         ),
                                                         onPressed: () {
-                                                          Navigator.of(context).push(
+                                                          Navigator.of(context)
+                                                              .push(
                                                               MaterialPageRoute(
                                                                   builder:
-                                                                      (context) =>
+                                                                      (
+                                                                      context) =>
                                                                       HeladeriaPage()));
                                                         },
                                                       ),
@@ -314,10 +324,12 @@ class _TardearPageState extends State<TardearPage> {
                                                           height: 38,
                                                         ),
                                                         onPressed: () {
-                                                          Navigator.of(context).push(
+                                                          Navigator.of(context)
+                                                              .push(
                                                               MaterialPageRoute(
                                                                   builder:
-                                                                      (context) =>
+                                                                      (
+                                                                      context) =>
                                                                       CerveceriasPage()));
                                                         },
                                                       ),
@@ -360,7 +372,10 @@ class _TardearPageState extends State<TardearPage> {
                   ],
                 ),
                 Container(
-                  width: MediaQuery.of(context).size.width,
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width,
                   height: 50.0,
                   color: Colors.white,
                   child: Text('Lugares',
@@ -377,12 +392,22 @@ class _TardearPageState extends State<TardearPage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 24.0),
                   child: Container(
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery
+                        .of(context)
+                        .size
+                        .height,
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
                     child: StreamBuilder(
                       stream: Firestore.instance
                           .collection('client')
                           .where("tasktags", arrayContains: 'Tardear')
+                          .where(
+                        'ciudad',
+                        isEqualTo: prefsus.ciudad,
+                      )
                           .snapshots(),
                       builder: (BuildContext context,
                           AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -392,9 +417,10 @@ class _TardearPageState extends State<TardearPage> {
                           return ListView.separated(
                               controller: _controller,
                               shrinkWrap: true,
-                              separatorBuilder: (context, index) => Divider(
-                                color: Colors.grey,
-                              ),
+                              separatorBuilder: (context, index) =>
+                                  Divider(
+                                    color: Colors.grey,
+                                  ),
                               itemCount: snapshot.data.documents.length,
                               itemBuilder: (BuildContext context, index) {
                                 return ListTile(
@@ -405,9 +431,10 @@ class _TardearPageState extends State<TardearPage> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => ClientBody(
-                                            datos: datasnp,
-                                          )),
+                                          builder: (context) =>
+                                              ClientBody(
+                                                datos: datasnp,
+                                              )),
                                     );
                                   },
                                   leading: ClipRRect(
@@ -440,7 +467,7 @@ class _TardearPageState extends State<TardearPage> {
                                     ),
                                   ),
                                   subtitle: Text(
-                                    snapshot.data.documents[0]['taskfoods']
+                                    snapshot.data.documents[0]['taskfoods'][0]
                                         .toString()
                                         .replaceAll(
                                       new RegExp(r'[^\w\s\á-ú]+'),
@@ -456,7 +483,7 @@ class _TardearPageState extends State<TardearPage> {
                                     ),
                                   ),
                                   trailing: Container(
-                                    width: 36.0,
+                                    width: 34.0,
                                     height: 13.18,
                                     child: StreamBuilder(
                                         stream: Firestore.instance
@@ -478,9 +505,9 @@ class _TardearPageState extends State<TardearPage> {
                                                     rating: double.parse(
                                                         snapshot.data.documents[
                                                         index]['rating']),
-                                                    size: 13.0,
+                                                    size: 10.0,
                                                     starCount: 1,
-                                                    spacing: 2.0,
+                                                    spacing: 1.0,
                                                   ),
                                                 ),
                                                 Text(snapshot
@@ -488,7 +515,8 @@ class _TardearPageState extends State<TardearPage> {
                                                     .documents[index]
                                                 ['rating']
                                                     .toString() ??
-                                                    '')
+                                                    '', style: TextStyle(
+                                                    fontSize: 10),)
                                               ],
                                             );
                                           }

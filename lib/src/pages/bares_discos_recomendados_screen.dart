@@ -1,6 +1,8 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:seemur/src/pages/client_body_screen.dart';
+import 'package:seemur/src/providers/preferencias_usuario.dart';
 
 class BaresyDiscosParaTi extends StatefulWidget {
   _BaresyDiscosParaTiState createState() => _BaresyDiscosParaTiState();
@@ -15,13 +17,21 @@ class _BaresyDiscosParaTiState extends State<BaresyDiscosParaTi> {
   }
 
   @override
-  Widget build(
-      BuildContext context,
-      ) {
+  void initState() {
+    super.initState();
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context,) {
+    final prefsus = new PreferenciasUsuario();
+    print('ciudad bar----');
+    print('${prefsus.ciudad}');
     return StreamBuilder(
         stream: Firestore.instance
             .collection('client')
             .where('tasktags', arrayContains: 'Disco para ti')
+            .where('ciudad', isEqualTo: prefsus.ciudad)
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
@@ -51,7 +61,7 @@ class _BaresyDiscosParaTiState extends State<BaresyDiscosParaTi> {
                     height: 25.0,
                   ),
                   SizedBox(
-                    height: 94,
+                    height: 106,
                     child: ListView.separated(
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (ctx, idx) {
@@ -65,9 +75,10 @@ class _BaresyDiscosParaTiState extends State<BaresyDiscosParaTi> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => ClientBody(
-                                        datos: datasnp,
-                                      )),
+                                      builder: (context) =>
+                                          ClientBody(
+                                            datos: datasnp,
+                                          )),
                                 );
                               },
                               child: Row(
@@ -89,18 +100,21 @@ class _BaresyDiscosParaTiState extends State<BaresyDiscosParaTi> {
                                   ),
                                   Container(
                                     width:
-                                    MediaQuery.of(context).size.width * 0.6,
-                                    height: 80.0,
+                                    MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width * 0.7,
+                                    height: 94.0,
                                     child: ListTile(
                                       contentPadding:
                                       EdgeInsets.fromLTRB(14, 0, 50, 0),
                                       title: Column(
                                         children: <Widget>[
                                           SizedBox(
-                                            height: 16.0,
+                                            height: 20.0,
                                           ),
                                           Container(
-                                            child: Text(
+                                            child: AutoSizeText(
                                               snapshot.data.documents[idx]
                                               ['taskname'],
                                               style: TextStyle(

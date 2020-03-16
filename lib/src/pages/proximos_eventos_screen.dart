@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:seemur/src/pages/evento_body_screen.dart';
+import 'package:seemur/src/providers/preferencias_usuario.dart';
 
 class ProximosEventosPage extends StatefulWidget {
   final datos;
@@ -24,8 +25,12 @@ class _ProximosEventosPageState extends State<ProximosEventosPage> {
   Widget build(
       BuildContext context,
       ) {
+    final prefsus = new PreferenciasUsuario();
     return StreamBuilder(
-        stream: Firestore.instance.collection('evento').snapshots(),
+        stream: Firestore.instance
+            .collection('evento')
+            .where('ciudad', isEqualTo: prefsus.ciudad)
+            .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             const Text('loading');
@@ -151,8 +156,7 @@ class _DetailScreenState extends State<DetailScreen> {
               width: MediaQuery.of(context).size.width,
               height: 294,
               fit: BoxFit.cover,
-              placeholder:
-              ('assets/images/Contenedordeimagenes.jpg'),
+              placeholder: ('assets/images/Contenedordeimagenes.jpg'),
               image: (widget.infoimagen['imagen'].toString()),
             ),
           ),

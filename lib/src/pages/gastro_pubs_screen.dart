@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:seemur/src/pages/client_body_screen.dart';
+import 'package:seemur/src/providers/preferencias_usuario.dart';
 import 'package:seemur/src/widgets/bottom_navigator_bar_widget.dart';
 
 class GastroPubsPage extends StatefulWidget {
@@ -50,12 +51,17 @@ class ListGastroPubs extends StatefulWidget {
 
 class _ListGastroPubsState extends State<ListGastroPubs> {
   Future getClient() async {
+    final prefsus = new PreferenciasUsuario();
     print('hola');
     var firestore = Firestore.instance;
 
     QuerySnapshot qn = await firestore
         .collection('client')
         .where('tasktags', arrayContains: 'GastroPubs')
+        .where(
+      'ciudad',
+      isEqualTo: prefsus.ciudad,
+    )
         .getDocuments();
     return qn.documents;
   }

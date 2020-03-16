@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:seemur/src/pages/client_body_screen.dart';
+import 'package:seemur/src/providers/preferencias_usuario.dart';
 import 'package:seemur/src/widgets/bottom_navigator_bar_widget.dart';
 
 class DiscotecasPage extends StatefulWidget {
@@ -49,12 +50,17 @@ class ListDiscotecasPage extends StatefulWidget {
 
 class _ListDiscotecasPageState extends State<ListDiscotecasPage> {
   Future getClient() async {
+    final prefsus = new PreferenciasUsuario();
     print('hola');
     var firestore = Firestore.instance;
 
     QuerySnapshot qn = await firestore
         .collection('client')
         .where('tasktags', arrayContains: 'Discotecas')
+        .where(
+      'ciudad',
+      isEqualTo: prefsus.ciudad,
+    )
         .getDocuments();
     return qn.documents;
   }

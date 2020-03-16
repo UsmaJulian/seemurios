@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:seemur/src/pages/client_body_screen.dart';
+import 'package:seemur/src/providers/preferencias_usuario.dart';
 import 'package:seemur/src/widgets/bottom_navigator_bar_widget.dart';
 
 class RestaurantesPage extends StatefulWidget {
@@ -52,10 +53,14 @@ class ListRestaurantes extends StatefulWidget {
 class _ListRestaurantesState extends State<ListRestaurantes> {
   Future getClient() async {
     var firestore = Firestore.instance;
-
+    final prefsus = new PreferenciasUsuario();
     QuerySnapshot qn = await firestore
         .collection('client')
         .where('tasktags', arrayContains: 'Restaurantes')
+        .where(
+      'ciudad',
+      isEqualTo: prefsus.ciudad,
+    )
         .getDocuments();
     return qn.documents;
   }

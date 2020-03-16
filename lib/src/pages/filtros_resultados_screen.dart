@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:seemur/src/pages/client_body_screen.dart';
 import 'package:seemur/src/providers/auth_provider.dart';
+import 'package:seemur/src/providers/preferencias_usuario.dart';
 import 'package:seemur/src/providers/user_model_provider.dart';
 import 'package:seemur/src/utilities/constants.dart';
 import 'package:seemur/src/widgets/search_bar_widget.dart';
@@ -26,6 +28,7 @@ class _FiltrosresultState extends State<Filtrosresult>
   final formKey = GlobalKey<FormState>();
   String _itemCiudad;
   List<DropdownMenuItem<String>> _ciudadItems;
+  final prefs = new PreferenciasUsuario();
 
   @override
   void initState() {
@@ -192,7 +195,6 @@ class _FiltrosresultState extends State<Filtrosresult>
                   ),
                 ),
                 StreamBuilder(
-                    initialData: [],
                     stream: Firestore.instance
                         .collection('client')
 //												.where('taskenvironments',
@@ -202,7 +204,7 @@ class _FiltrosresultState extends State<Filtrosresult>
 
                     //                        isGreaterThanOrEqualTo: widget.misrestaurantes)
 
-                    //.where('tasktags', isEqualTo: widget.misBares)
+                        .where('tasktags', arrayContainsAny: prefs.filtros)
 
                     //                  .where('taskfeatures',
 
@@ -314,6 +316,18 @@ class _FiltrosresultState extends State<Filtrosresult>
                                       ],
                                     ),
                                   ),
+                                  onTap:(){
+                                    final datasnp =
+                                        snapshot.data.documents[index].data;
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              ClientBody(
+                                                datos: datasnp,
+                                              )),
+                                    );
+                                  } ,
                                 );
                               },
                             ),

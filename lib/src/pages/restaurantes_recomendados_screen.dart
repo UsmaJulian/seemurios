@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:seemur/src/pages/client_body_screen.dart';
+import 'package:seemur/src/providers/preferencias_usuario.dart';
 
 class RestaurantesParaTi extends StatefulWidget {
   _RestaurantesParaTiState createState() => _RestaurantesParaTiState();
@@ -15,13 +16,28 @@ class _RestaurantesParaTiState extends State<RestaurantesParaTi> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    setState(() {});
+  }
+
+  @override
   Widget build(
       BuildContext context,
       ) {
+    final prefsus = new PreferenciasUsuario();
+
     return StreamBuilder(
         stream: Firestore.instance
             .collection('client')
-            .where('tasktags', arrayContains: 'Restaurante para ti')
+            .where(
+          'tasktags',
+          arrayContains: 'Restaurante para ti',
+        )
+            .where(
+          'ciudad',
+          isEqualTo: prefsus.ciudad,
+        )
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
@@ -63,9 +79,10 @@ class _RestaurantesParaTiState extends State<RestaurantesParaTi> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => ClientBody(
-                                        datos: datasnp,
-                                      )),
+                                      builder: (context) =>
+                                          ClientBody(
+                                            datos: datasnp,
+                                          )),
                                 );
                               },
                               child: Row(
@@ -87,8 +104,11 @@ class _RestaurantesParaTiState extends State<RestaurantesParaTi> {
                                   ),
                                   Container(
                                     width:
-                                    MediaQuery.of(context).size.width * 0.6,
-                                    height: 72.0,
+                                    MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width * 0.7,
+                                    height: 78.0,
                                     child: ListTile(
                                       contentPadding:
                                       EdgeInsets.fromLTRB(14, 0, 111, 0),

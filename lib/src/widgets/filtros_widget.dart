@@ -45,6 +45,7 @@ class _FiltrosPageState extends State<FiltrosPage> {
         child: Column(
           children: <Widget>[
             Container(height: 750, child: FiltroChipsPage()),
+
           ],
         ),
       ),

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:seemur/src/pages/client_body_screen.dart';
+import 'package:seemur/src/providers/preferencias_usuario.dart';
 import 'package:seemur/src/widgets/bottom_navigator_bar_widget.dart';
 
 class CerveceriasPage extends StatefulWidget {
@@ -48,6 +49,8 @@ class ListCerveceriasPage extends StatefulWidget {
 }
 
 class _ListCerveceriasPageState extends State<ListCerveceriasPage> {
+  final prefsus = new PreferenciasUsuario();
+
   Future getClient() async {
     print('hola');
     var firestore = Firestore.instance;
@@ -55,6 +58,10 @@ class _ListCerveceriasPageState extends State<ListCerveceriasPage> {
     QuerySnapshot qn = await firestore
         .collection('client')
         .where('tasktags', arrayContains: 'Cervecerías')
+        .where(
+      'ciudad',
+      isEqualTo: prefsus.ciudad,
+    )
         .getDocuments();
     return qn.documents;
   }
@@ -88,9 +95,10 @@ class _ListCerveceriasPageState extends State<ListCerveceriasPage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => ClientBody(
-                                        datos: datasnp,
-                                      )),
+                                      builder: (context) =>
+                                          ClientBody(
+                                            datos: datasnp,
+                                          )),
                                 );
                               },
                               child: Row(
@@ -104,7 +112,8 @@ class _ListCerveceriasPageState extends State<ListCerveceriasPage> {
                                       fit: BoxFit.fill,
                                       placeholder:
                                       ('assets/images/Contenedordeimagenes.jpg'),
-                                      image: (snapshot.data[index].data['logos']),
+                                      image: (snapshot.data[index]
+                                          .data['logos']),
                                     ),
                                   ),
                                   SizedBox(
@@ -112,7 +121,10 @@ class _ListCerveceriasPageState extends State<ListCerveceriasPage> {
                                     height: 47.0,
                                   ),
                                   Container(
-                                    width: MediaQuery.of(context).size.width * 0.6,
+                                    width: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width * 0.6,
                                     height: 72.0,
                                     child: ListTile(
                                       title: Container(
@@ -144,7 +156,10 @@ class _ListCerveceriasPageState extends State<ListCerveceriasPage> {
         Positioned(
           bottom: 0,
           child: Container(
-            width: MediaQuery.of(context).size.width,
+            width: MediaQuery
+                .of(context)
+                .size
+                .width,
             height: 70,
             child: NavigatorBar(navCallback: (i) => print("Navigating to $i")),
           ),

@@ -8,6 +8,7 @@ import 'package:seemur/src/pages/client_body_screen.dart';
 import 'package:seemur/src/pages/gastro_pubs_screen.dart';
 import 'package:seemur/src/pages/hoteles_screen.dart';
 import 'package:seemur/src/pages/restaurantes_screen.dart';
+import 'package:seemur/src/providers/preferencias_usuario.dart';
 import 'package:seemur/src/widgets/bottom_navigator_bar_widget.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
@@ -16,6 +17,7 @@ class ComerPage extends StatefulWidget {
 }
 
 class _ComerPageState extends State<ComerPage> {
+  final prefsus = new PreferenciasUsuario();
   ScrollController _controller;
 
   @override
@@ -70,7 +72,7 @@ class _ComerPageState extends State<ComerPage> {
                       children: <Widget>[
                         Padding(
                           padding:
-                          EdgeInsets.only(top: 48.0, left: 0, right: 125.0),
+                          EdgeInsets.only(top: 48.0, left: 0, right: 60.0),
                           child: Text('Sugerencias para ti',
                               style: TextStyle(
                                 fontFamily: 'HankenGrotesk',
@@ -90,7 +92,7 @@ class _ComerPageState extends State<ComerPage> {
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(26)),
                                 margin: EdgeInsets.symmetric(vertical: 30.0),
-                                height: 125,
+                                height: 130,
                                 child: ListView(
                                   scrollDirection: Axis.horizontal,
                                   children: <Widget>[
@@ -119,7 +121,8 @@ class _ComerPageState extends State<ComerPage> {
                                                         height: 38,
                                                       ),
                                                       onPressed: () {
-                                                        Navigator.of(context).push(
+                                                        Navigator.of(context)
+                                                            .push(
                                                             MaterialPageRoute(
                                                                 builder:
                                                                     (context) =>
@@ -184,10 +187,12 @@ class _ComerPageState extends State<ComerPage> {
                                                           height: 38,
                                                         ),
                                                         onPressed: () {
-                                                          Navigator.of(context).push(
+                                                          Navigator.of(context)
+                                                              .push(
                                                               MaterialPageRoute(
                                                                   builder:
-                                                                      (context) =>
+                                                                      (
+                                                                      context) =>
                                                                       GastroPubsPage()));
                                                         },
                                                       ),
@@ -250,10 +255,12 @@ class _ComerPageState extends State<ComerPage> {
                                                           height: 38,
                                                         ),
                                                         onPressed: () {
-                                                          Navigator.of(context).push(
+                                                          Navigator.of(context)
+                                                              .push(
                                                               MaterialPageRoute(
                                                                   builder:
-                                                                      (context) =>
+                                                                      (
+                                                                      context) =>
                                                                       BaresPage()));
                                                         },
                                                       ),
@@ -316,10 +323,12 @@ class _ComerPageState extends State<ComerPage> {
                                                           height: 38,
                                                         ),
                                                         onPressed: () {
-                                                          Navigator.of(context).push(
+                                                          Navigator.of(context)
+                                                              .push(
                                                               MaterialPageRoute(
                                                                   builder:
-                                                                      (context) =>
+                                                                      (
+                                                                      context) =>
                                                                       HotelesPage()));
                                                         },
                                                       ),
@@ -394,6 +403,10 @@ class _ComerPageState extends State<ComerPage> {
                       stream: Firestore.instance
                           .collection('client')
                           .where("tasktags", arrayContains: 'Comer')
+                          .where(
+                        'ciudad',
+                        isEqualTo: prefsus.ciudad,
+                      )
                           .snapshots(),
                       builder: (BuildContext context,
                           AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -430,7 +443,7 @@ class _ComerPageState extends State<ComerPage> {
                                       height: 46,
                                       fit: BoxFit.cover,
                                       placeholder:
-                                      ('assets/images/icons/Contenedordeimagenes.jpg'),
+                                      ('assets/images/Contenedordeimagenes.jpg'),
                                       image: snapshot.data.documents[index]
                                       ['logos'],
                                     ),
@@ -453,7 +466,7 @@ class _ComerPageState extends State<ComerPage> {
                                     ),
                                   ),
                                   subtitle: Text(
-                                    snapshot.data.documents[0]['taskfoods']
+                                    snapshot.data.documents[0]['taskfoods'][0]
                                         .toString()
                                         .replaceAll(
                                       new RegExp(r'[^\w\s\á-ú]+'),
@@ -469,7 +482,7 @@ class _ComerPageState extends State<ComerPage> {
                                     ),
                                   ),
                                   trailing: Container(
-                                    width: 36.0,
+                                    width: 34.0,
                                     height: 13.18,
                                     child: StreamBuilder(
                                         stream: Firestore.instance
@@ -483,6 +496,7 @@ class _ComerPageState extends State<ComerPage> {
                                             return Row(
                                               children: <Widget>[
                                                 Container(
+
                                                   child: SmoothStarRating(
                                                     borderColor:
                                                     Color(0xff16202C),
@@ -491,9 +505,9 @@ class _ComerPageState extends State<ComerPage> {
                                                     rating: double.parse(
                                                         snapshot.data.documents[
                                                         index]['rating']),
-                                                    size: 13.0,
+                                                    size: 10.0,
                                                     starCount: 1,
-                                                    spacing: 2.0,
+                                                    spacing: 1.0,
                                                   ),
                                                 ),
                                                 Text(snapshot
@@ -501,7 +515,8 @@ class _ComerPageState extends State<ComerPage> {
                                                     .documents[index]
                                                 ['rating']
                                                     .toString() ??
-                                                    '')
+                                                    '', style: TextStyle(
+                                                    fontSize: 10),)
                                               ],
                                             );
                                           }

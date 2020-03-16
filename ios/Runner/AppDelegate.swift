@@ -14,7 +14,7 @@ import FacebookLogin
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]?
   ) -> Bool {
     ApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
-    GMSServices.provideAPIKey("AIzaSyCi5DH7D5JcuDi5eZTny17tOfKeuYJTEzY")
+    GMSServices.provideAPIKey("AIzaSyCW0KlvZpAlZZeREKi8f6gmSk7fljrjzMQ")
     FirebaseApp.configure()
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)

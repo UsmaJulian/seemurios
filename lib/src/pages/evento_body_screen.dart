@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:seemur/src/providers/auth_provider.dart';
 import 'package:seemur/src/widgets/bottom_navigator_bar_widget.dart';
+import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class EventoBody extends StatefulWidget {
@@ -178,7 +179,14 @@ class _EventoBodyState extends State<EventoBody> {
                                                     MainAxisAlignment.start,
                                                     children: <Widget>[
                                                       FloatingActionButton(
-                                                        onPressed: () {},
+                                                        onPressed: ()=>share(
+                                                            context,
+                                                            widget.datosevent[
+                                                            'nombre']
+                                                            ,
+                                                            widget.datosevent[
+                                                            'descripcion']
+                                                        ),
                                                         backgroundColor:
                                                         Color(0xff16202c),
                                                         mini: true,
@@ -377,5 +385,13 @@ class _EventoBodyState extends State<EventoBody> {
         ),
       ),
     );
+  }
+
+  share(BuildContext context, nombre, descripcion) {
+    String text = nombre;
+    final RenderBox box = context.findRenderObject();
+    Share.share(text,
+        subject: descripcion,
+        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 }

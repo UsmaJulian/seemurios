@@ -5,9 +5,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:seemur/src/pages/calificar_screen.dart';
+import 'package:seemur/src/pages/maps_screen.dart';
 import 'package:seemur/src/pages/plato_seleccionado_screen.dart';
 import 'package:seemur/src/providers/auth_provider.dart';
+import 'package:seemur/src/widgets/alert_favoritos_widget.dart';
+import 'package:seemur/src/widgets/alert_visitados_widget.dart';
 import 'package:seemur/src/widgets/bottom_navigator_bar_widget.dart';
+import 'package:share/share.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -147,6 +151,8 @@ class _ClientBodyState extends State<ClientBody> {
                                                       ],
                                                     ),
                                                     onPressed: () {
+                                                      String cliente = widget
+                                                          .datos['taskname'];
                                                       setState(() {
                                                         Firestore.instance
                                                             .collection(
@@ -225,6 +231,8 @@ class _ClientBodyState extends State<ClientBody> {
                                                               .datos['tasktime']
                                                               .toString(),
                                                         });
+                                                        showdialogVisitados(
+                                                            context, cliente);
                                                       });
                                                     },
                                                   )),
@@ -310,9 +318,9 @@ class _ClientBodyState extends State<ClientBody> {
                                                                       .documents[index]
                                                                   [
                                                                   'rating']),
-                                                              size: 18.0,
+                                                              size: 12.0,
                                                               starCount: 5,
-                                                              spacing: 2.0,
+                                                              spacing: 1.0,
                                                             ),
                                                             SizedBox(
                                                               width: 16.0,
@@ -330,7 +338,7 @@ class _ClientBodyState extends State<ClientBody> {
                                                                   'HankenGrotesk',
                                                                   color: Color(
                                                                       0xff000000),
-                                                                  fontSize: 24,
+                                                                  fontSize: 10,
                                                                   fontWeight:
                                                                   FontWeight
                                                                       .w700,
@@ -508,15 +516,15 @@ class _ClientBodyState extends State<ClientBody> {
                                 allowHalfRating: true,
                                 rating: double.parse(
                                     snapshot.data.documents[idx]['rating']),
-                                size: 14.0,
+                                size: 10.0,
                                 starCount: 5,
-                                spacing: 2.0,
+                                spacing: 1.0,
                               ),
                               SizedBox(
                                 width: 16.0,
                               ),
                               Text(snapshot.data.documents[idx]['rating']
-                                  .toString())
+                                  .toString(), style: TextStyle(fontSize: 10),)
                             ],
                           );
                         });
@@ -609,10 +617,12 @@ class _ClientBodyState extends State<ClientBody> {
   }
 
   getFav1(IconData iconData, Color color) {
+    String cliente = widget.datos['taskname'];
     return FloatingActionButton(
       heroTag: "button1",
       onPressed: () {
         favoritos();
+        ShowdialogFavoritos(context, cliente);
       },
       backgroundColor: Color(0xff16202c),
       mini: true,
@@ -815,13 +825,13 @@ class _ClientBodyState extends State<ClientBody> {
         ),
         InkWell(
           onTap: () {
-//            Navigator.push(
-//                context,
-//                MaterialPageRoute(
-//                    builder: (context) =>
-//                        MapsPage(
-//                          lugar: widget.datos['taskname'].toString(),
-//                        )));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        MapsPage(
+                          lugar: widget.datos['taskname'].toString(),
+                        )));
           },
           child: ListTile(
             dense: true,
@@ -979,11 +989,11 @@ class _ClientBodyState extends State<ClientBody> {
   }
 
   share(BuildContext context, nombre, descripcion) {
-//    String text = nombre;
-//    final RenderBox box = context.findRenderObject();
-//    Share.share(text,
-//        subject: descripcion,
-//        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+    String text = nombre;
+    final RenderBox box = context.findRenderObject();
+    Share.share(text,
+        subject: descripcion,
+        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 }
 

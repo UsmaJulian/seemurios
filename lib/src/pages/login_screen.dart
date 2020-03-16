@@ -706,9 +706,8 @@ class _LoginPageState extends State<LoginPage> {
               width: 295.0,
               height: 44.0,
 
-              child: isLoggedIn
-                  ? null
-                  : FacebookSignInButton(
+              child: 
+                  FacebookSignInButton(
                 borderRadius: 22.0,
                 text: 'Continuar con Facebook',
                 onPressed: _logIn,

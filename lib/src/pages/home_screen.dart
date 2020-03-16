@@ -1,5 +1,6 @@
 
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -11,12 +12,16 @@ import 'package:seemur/src/pages/proximos_eventos_screen.dart';
 import 'package:seemur/src/pages/restaurantes_recomendados_screen.dart';
 import 'package:seemur/src/pages/tardear_screen.dart';
 import 'package:seemur/src/providers/auth_provider.dart';
+import 'package:seemur/src/providers/preferencias_usuario.dart';
 import 'package:seemur/src/providers/user_model_provider.dart';
 import 'package:seemur/src/utilities/constants.dart';
 import 'package:seemur/src/widgets/bottom_navigator_bar_widget.dart';
 import 'package:seemur/src/widgets/search_bar_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
+  static final String routeName = 'home';
+
   HomePage({this.auth});
 
   final BaseAuth auth;
@@ -25,7 +30,7 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
+class _HomePageState extends State<HomePage> {
   final databaseReference = Firestore.instance;
   String usuario = 'Usuario'; //user
   String usuarioEmail = 'Email'; //userEmail
@@ -33,77 +38,38 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   final formKey = GlobalKey<FormState>();
   String _itemCiudad;
   List<DropdownMenuItem<String>> _ciudadItems;
+  var ciudaditemsel;
 
   @override
   void initState() {
-    WidgetsBinding.instance.addObserver(this);
     super.initState();
+    cargarCiudadSeleccionada();
     widget.auth.infoUser().then((onValue) {
       setState(() {
         usuario = onValue.displayName;
         usuarioEmail = onValue.email;
         id = onValue.uid;
         print('ID $id');
-
-        _ciudadItems = getCiudadItems();
-        _itemCiudad = _ciudadItems[0].value;
       });
     });
   }
 
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
+  cargarCiudadSeleccionada() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    ciudaditemsel = prefs.getString('ciudad');
+    setState(() {});
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    print('state = $state');
+  _setCiudadSeleccionada(ciudadSeleccionada) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('ciudad', ciudadSeleccionada);
+    setState(() {
+      ciudaditemsel = ciudadSeleccionada;
+    });
   }
 
-  getData() async {
-    return await Firestore.instance.collection('ciudades').getDocuments();
-  }
-
-  //Dropdownlist from firestore
-  List<DropdownMenuItem<String>> getCiudadItems() {
-    List<DropdownMenuItem<String>> items = List();
-    QuerySnapshot dataCiudades;
-    getData().then((data) {
-      dataCiudades = data;
-      dataCiudades.documents.forEach((obj) {
-        print('${obj.documentID} ${obj['nombre']}');
-        items.add(DropdownMenuItem(
-          value: obj.documentID,
-          child: Text(obj['nombre'],
-              style: TextStyle(
-                fontFamily: 'OpenSans',
-                color: Color(0xffffffff),
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                fontStyle: FontStyle.normal,
-                letterSpacing: 0,
-              )),
-        ));
-      });
-    }).catchError((error) => print('hay un error.....' + error));
-
-    items.add(DropdownMenuItem(
-      value: '0',
-      child: Text('Ciudad ',
-          style: TextStyle(
-            fontFamily: 'OpenSans',
-            color: Color(0xffffffff),
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-            fontStyle: FontStyle.normal,
-            letterSpacing: 0,
-          )),
-    ));
-
-    return items;
-  }
+  final prefs = new PreferenciasUsuario();
 
   @override
   Widget build(BuildContext context,) {
@@ -144,75 +110,114 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                         style: TextStyle(
                                           fontFamily: 'HankenGrotesk',
                                           color: Color(0xffffffff),
-                                          fontSize: 24,
+                                          fontSize: 22,
                                           fontWeight: FontWeight.w700,
                                           fontStyle: FontStyle.normal,
                                           letterSpacing: -0.4000000059604645,
                                         ),
                                       ),
                                       SizedBox(
-                                        width: 60,
+                                        width: 20,
                                       ),
-                                      FutureBuilder(
-                                        initialData: [],
-                                        future: usersRef.document(id).get(),
+                                      StreamBuilder(
+                                        stream: Firestore.instance
+                                            .collection('usuarios')
+                                            .document(id)
+                                            .snapshots(),
                                         builder: (BuildContext context,
                                             AsyncSnapshot snapshot) {
-                                          if (!snapshot.hasData) {
-                                            return Center(
-                                              child:
-                                              CircularProgressIndicator(),
-                                            );
+                                          switch (snapshot.connectionState) {
+                                            case ConnectionState.none:
+                                            case ConnectionState.waiting:
+                                              return new Text('loading...');
+                                            default:
+                                              if (snapshot.hasError)
+                                                return new Text(
+                                                    'Error: ${snapshot.error}');
+                                              else if (snapshot.hasData) {
+                                                return CircleAvatar(
+                                                    radius: 30.0,
+                                                    backgroundColor:
+                                                    Colors.black,
+                                                    backgroundImage: snapshot
+                                                        .data['imagen']
+                                                        .isEmpty
+                                                        ? AssetImage(
+                                                        'assets/images/Contenedordeimagenes.jpg')
+                                                        : CachedNetworkImageProvider(
+                                                        snapshot.data[
+                                                        'imagen']));
+                                              }
                                           }
-                                          Usuario usuario =
-                                          Usuario.fromDoc(snapshot.data);
-                                          return CircleAvatar(
-                                              radius: 40.0,
-                                              backgroundColor: Colors.grey,
-                                              backgroundImage: usuario
-                                                  .profileImageUrl.isEmpty
-                                                  ? AssetImage(
-                                                  'assets/images/Contenedordeimagenes.jpg')
-                                                  : CachedNetworkImageProvider(
-                                                  usuario.profileImageUrl));
+                                          return Container(
+
+                                          );
                                         },
                                       ),
                                     ],
                                   ),
                                 ),
                               ),
+//AGREGAR DROPDOWN
+
+                              StreamBuilder<QuerySnapshot>(
+                                  stream: Firestore.instance
+                                      .collection("ciudades")
+                                      .snapshots(),
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData)
+                                      const Text("Loading.....");
+                                    else {
+                                      List<DropdownMenuItem> ciudadItems = [];
+                                      for (int i = 0;
+                                      i < snapshot.data.documents.length;
+                                      i++) {
+                                        DocumentSnapshot snap =
+                                        snapshot.data.documents[i];
+                                        ciudadItems.add(
+                                          DropdownMenuItem(
+                                            child: Text(
+                                              snap.documentID,
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                            value: "${snap.documentID}",
+                                          ),
+                                        );
+                                      }
+                                      return Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          SizedBox(
+                                            width: 25.0,
+                                          ),
+                                          SizedBox(
+                                              child: Theme(
+                                                data: Theme.of(context)
+                                                    .copyWith(
+                                                  canvasColor: Color(
+                                                      0xff16202c),
+                                                ),
+                                                child: DropdownButton(
+                                                  items: ciudadItems,
+                                                  onChanged: _setCiudadSeleccionada,
+                                                  value: ciudaditemsel,
+                                                  isExpanded: false,
+                                                  hint: new Text(
+                                                    "Selecciona una ciudad",
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                ),
+                                              )),
+                                        ],
+                                      );
+                                    }
+                                    return Text('cargando');
+                                  }),
                               Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 0, left: 0.0, right: 201.0),
-                                child: SizedBox(
-                                  width: 100,
-                                  child: Theme(
-                                    data: Theme.of(context).copyWith(
-                                      canvasColor: Color(0xff16202c),
-                                    ),
-                                    child: DropdownButtonFormField(
-                                      decoration: InputDecoration(
-                                          border: InputBorder.none,
-                                          isDense: true),
-                                      validator: (value) =>
-                                      value == '0'
-                                          ? 'Debe seleccionar una ciudad'
-                                          : null,
-                                      value: _itemCiudad,
-                                      items: _ciudadItems,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          _itemCiudad = value;
-                                        });
-                                      },
-                                      //seleccionarCiudadItem,
-                                      onSaved: (value) => _itemCiudad = value,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
+                                padding: const EdgeInsets.only(top: 20.0),
                                 child: Column(
                                   children: <Widget>[
                                     SearchBar(),
@@ -242,19 +247,24 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
                               Padding(
                                 padding: const EdgeInsets.only(
-                                    left: 24.0, top: 47.0, right: 250.0),
-                                child: Text("Explorar",
-                                    style: TextStyle(
-                                      fontFamily: 'HankenGrotesk',
-                                      color: Color(0xff000000),
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w700,
-                                      fontStyle: FontStyle.normal,
-                                      letterSpacing: -0.1000000014901161,
-                                    )),
+                                  left: 24.0, top: 47.0,),
+                                child: Align(
+                                  alignment: AlignmentDirectional.centerStart
+                                  ,
+                                  child: AutoSizeText("Explorar",
+                                      style: TextStyle(
+                                        fontFamily: 'HankenGrotesk',
+                                        color: Color(0xff000000),
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w700,
+                                        fontStyle: FontStyle.normal,
+                                        letterSpacing: -0.1000000014901161,
+                                      )),
+                                ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 1),
@@ -571,8 +581,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                               Padding(
                                 padding: const EdgeInsets.only(
                                     left: 0, top: 47.0, right: 0),
-                                child:
-                                RestaurantesParaTi(),
+                                child: RestaurantesParaTi(),
                               ),
                               Padding(
                                   padding: const EdgeInsets.only(
@@ -580,8 +589,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                       top: 47.0,
                                       right: 0.0,
                                       bottom: 50.0),
-                                  child:
-                                  BaresyDiscosParaTi()),
+                                  child: BaresyDiscosParaTi()),
                             ],
                           ),
                         ),

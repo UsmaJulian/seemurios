@@ -6,6 +6,7 @@ import 'package:seemur/src/pages/client_body_screen.dart';
 import 'package:seemur/src/pages/hospedajes_screen.dart';
 import 'package:seemur/src/pages/hostales_screen.dart';
 import 'package:seemur/src/pages/hoteles_screen.dart';
+import 'package:seemur/src/providers/preferencias_usuario.dart';
 import 'package:seemur/src/widgets/bottom_navigator_bar_widget.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
@@ -17,6 +18,7 @@ class DescansarPage extends StatefulWidget {
 
 class _DescansarPageState extends State<DescansarPage> {
   ScrollController _controller;
+  final prefsus = new PreferenciasUsuario();
 
   @override
   void initState() {
@@ -67,7 +69,7 @@ class _DescansarPageState extends State<DescansarPage> {
                       children: <Widget>[
                         Padding(
                           padding:
-                          EdgeInsets.only(top: 48.0, left: 0, right: 125.0),
+                          EdgeInsets.only(top: 48.0, left: 0, right: 60.0),
                           child: Text('Sugerencias para ti',
                               style: TextStyle(
                                 fontFamily: 'HankenGrotesk',
@@ -382,6 +384,10 @@ class _DescansarPageState extends State<DescansarPage> {
                       stream: Firestore.instance
                           .collection('client')
                           .where("tasktags", arrayContains: 'Descansar')
+                          .where(
+                        'ciudad',
+                        isEqualTo: prefsus.ciudad,
+                      )
                           .snapshots(),
                       builder: (BuildContext context,
                           AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -439,7 +445,7 @@ class _DescansarPageState extends State<DescansarPage> {
                                     ),
                                   ),
                                   subtitle: Text(
-                                    snapshot.data.documents[0]['taskfoods']
+                                    snapshot.data.documents[0]['taskfoods'][0]
                                         .toString()
                                         .replaceAll(
                                       new RegExp(r'[^\w\s\á-ú]+'),
@@ -477,9 +483,9 @@ class _DescansarPageState extends State<DescansarPage> {
                                                     rating: double.parse(
                                                         snapshot.data.documents[
                                                         index]['rating']),
-                                                    size: 13.0,
+                                                    size: 10.0,
                                                     starCount: 1,
-                                                    spacing: 2.0,
+                                                    spacing: 1.0,
                                                   ),
                                                 ),
                                                 Text(snapshot
@@ -487,7 +493,8 @@ class _DescansarPageState extends State<DescansarPage> {
                                                     .documents[index]
                                                 ['rating']
                                                     .toString() ??
-                                                    '')
+                                                    '', style: TextStyle(
+                                                    fontSize: 10),)
                                               ],
                                             );
                                           }

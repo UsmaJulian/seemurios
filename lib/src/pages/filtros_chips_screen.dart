@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:seemur/src/providers/preferencias_usuario.dart';
 import 'package:seemur/src/widgets/abierto_radio_widget.dart';
 import 'package:seemur/src/widgets/ambientes_widget.dart';
 import 'package:seemur/src/widgets/bares_discotecas_widget.dart';
 import 'package:seemur/src/widgets/boton_filtrar_widget.dart';
+import 'package:seemur/src/widgets/chips_seleccionables_widget.dart';
 import 'package:seemur/src/widgets/comodidades_widget.dart';
 import 'package:seemur/src/widgets/formas_de_pago_checklist_widget.dart';
 import 'package:seemur/src/widgets/rango_precios_slider_widget.dart';
@@ -18,16 +20,15 @@ class FiltroChipsPage extends StatefulWidget {
 }
 
 class _FiltroChipsPageState extends State<FiltroChipsPage> {
+  final prefs = new PreferenciasUsuario();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            AmbientesWidget(),
-            RestaurantesWidget(),
-            BaresDiscotecasWidget(),
-            ComodidadesWidget(),
+            ChipsSeleccionablesWidget(),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
@@ -111,7 +112,7 @@ class _FiltroChipsPageState extends State<FiltroChipsPage> {
             ),
             BotonFiltrar(),
             SizedBox(
-              height: 50.0,
+              height: 250.0,
             )
           ],
         ),

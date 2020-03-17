@@ -1,8 +1,10 @@
+
+
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:seemur/src/widgets/bottom_navigator_bar_widget.dart';
 
 class PlatoSeleccionadoPage extends StatefulWidget {
   final nombrePlato;
@@ -27,6 +29,18 @@ class _PlatoSeleccionadoPageState extends State<PlatoSeleccionadoPage> {
   Widget build(BuildContext context) {
     setState(() {});
     return Scaffold(
+      appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+              icon: Icon(
+                CupertinoIcons.back,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              })),
       body: StreamBuilder(
         stream: Firestore.instance
             .collection('recomendados')
@@ -214,7 +228,8 @@ class _PlatoSeleccionadoPageState extends State<PlatoSeleccionadoPage> {
                         return Column(
                           children: <Widget>[
                             Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
+                              padding:
+                              const EdgeInsets.only(top: 38.0, left: 8.0),
                               child: Text('Tambíen podría gustarte',
                                   style: TextStyle(
                                     fontFamily: 'HankenGrotesk',
@@ -233,11 +248,8 @@ class _PlatoSeleccionadoPageState extends State<PlatoSeleccionadoPage> {
                                     ['imagenes'];
 
                                     String imagesslid = jsonEncode(listado);
-                                    print('lista1-----');
-                                    print(imagesslid);
+
                                     List list2_2 = jsonDecode(imagesslid);
-                                    print('lista2-----');
-                                    print(list2_2);
 
                                     return Column(
                                       children: <Widget>[
@@ -273,11 +285,11 @@ class _PlatoSeleccionadoPageState extends State<PlatoSeleccionadoPage> {
             ],
           ),
         ),
-        Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 90),
-              child: NavigatorBar(navCallback: (i) => print("Navigating to $i")),
-            ))
+        // Container(
+        //   width: MediaQuery.of(context).size.width,
+        //   height: 70,
+        //   child: NavigatorBar(navCallback: (i) => print("Navigating to $i")),
+        // ),
       ],
     );
   }

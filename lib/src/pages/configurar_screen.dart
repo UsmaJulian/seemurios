@@ -1,15 +1,27 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:seemur/src/providers/preferencias_usuario.dart';
 
-
-import 'package:seemur/src/providers/preferencias_usuario.dart';class ConfigurarPage extends StatefulWidget {
+class ConfigurarPage extends StatefulWidget {
   @override
   _ConfigurarPageState createState() => _ConfigurarPageState();
 }
 
 class _ConfigurarPageState extends State<ConfigurarPage> {
-  final prefs = new PreferenciasUsuario ();
+  bool ubicacion;
+  bool notificaciones;
+  bool galeria;
+  final prefs = new PreferenciasUsuario();
+
+  @override
+  void initState() {
+    super.initState();
+    ubicacion = prefs.ubicacion;
+    notificaciones = prefs.notificaciones;
+    galeria = prefs.galeria;
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,17 +37,17 @@ class _ConfigurarPageState extends State<ConfigurarPage> {
         backgroundColor: Color.fromRGBO(22, 32, 44, 1),
         title: Center(
             child: Padding(
-              padding: const EdgeInsets.only(right: 50.0),
-              child: Text('Permitir acceso a',
-                  style: TextStyle(
-                    fontFamily: 'HankenGrotesk',
-                    color: Color(0xffffffff),
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    fontStyle: FontStyle.normal,
-                    letterSpacing: -0.5,
-                  )),
-            )),
+          padding: const EdgeInsets.only(right: 50.0),
+          child: Text('Permitir acceso a',
+              style: TextStyle(
+                fontFamily: 'HankenGrotesk',
+                color: Color(0xffffffff),
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                fontStyle: FontStyle.normal,
+                letterSpacing: -0.5,
+              )),
+        )),
       ),
       body: Column(
         children: <Widget>[
@@ -61,9 +73,12 @@ class _ConfigurarPageState extends State<ConfigurarPage> {
                     scale: 1.5,
                     child: Switch(
                       activeColor: Color(0xfff5af00),
-                      value: false,
+                      value: ubicacion,
                       onChanged: (value) {
-                        prefs.ubicacion = value;
+                        setState(() {
+                          ubicacion = value;
+                          prefs.ubicacion = value;
+                        });
                       },
                     ),
                   )
@@ -93,9 +108,12 @@ class _ConfigurarPageState extends State<ConfigurarPage> {
                     scale: 1.5,
                     child: Switch(
                       activeColor: Color(0xfff5af00),
-                      value: false,
+                      value: notificaciones,
                       onChanged: (value) {
-                        prefs.notificaciones = value;
+                        setState(() {
+                          notificaciones = value;
+                          prefs.notificaciones = value;
+                        });
                       },
                     ),
                   )
@@ -125,9 +143,12 @@ class _ConfigurarPageState extends State<ConfigurarPage> {
                     scale: 1.5,
                     child: Switch(
                       activeColor: Color(0xfff5af00),
-                      value: false,
+                      value: galeria,
                       onChanged: (value) {
-                        prefs.galeria = value;
+                        setState(() {
+                          galeria = value;
+                          prefs.galeria = value;
+                        });
                       },
                     ),
                   )
